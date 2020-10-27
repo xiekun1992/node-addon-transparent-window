@@ -1,0 +1,26 @@
+{
+  "name": "node-addon-transparent-window",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiekun1992/node-addon-transparent-window.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/xiekun1992/node-addon-transparent-window/issues"
+  },
+  "homepage": "https://github.com/xiekun1992/node-addon-transparent-window#readme",
+  "dependencies": {
+    "node-addon-api": "^3.0.2",
+    "node-gyp": "^7.1.2"
+  }
+}
