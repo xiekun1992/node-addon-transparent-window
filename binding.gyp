@@ -16,7 +16,7 @@
         {
           "OS == 'linux'", {
             "link_settings": {
-              "libraries": ["-lX11"]
+              "libraries": ["-lX11", "-lXfixes"]
             }
           }
         }

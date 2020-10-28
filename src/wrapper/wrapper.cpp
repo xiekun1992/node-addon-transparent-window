@@ -2,6 +2,7 @@
 #include "transparent_window_wrapper.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
+  TransparentWindow::initMethods(env, exports);
   return exports;
 }
 
