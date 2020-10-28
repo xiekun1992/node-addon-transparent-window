@@ -1,14 +1,15 @@
 #include "transparent_window.h"
 
 namespace transparent_window {
-  Window::Window() {
+  BlankWindow::BlankWindow() {
 #if __linux == 1
-    display = XOpenDisplay(NULL);
     keep_running = 1;
 #endif
   }
-  void Window::create() {
+  void BlankWindow::create(std::function<void()> const& lambda) {
 #if __linux == 1
+    Display* display = XOpenDisplay(NULL);
+
     XVisualInfo vinfo;
     XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
 
@@ -17,7 +18,7 @@ namespace transparent_window {
     attr.border_pixel = 0;
     attr.background_pixel = 0;
 
-    win = XCreateWindow(display, DefaultRootWindow(display), 0, 0, 3000, 2000, 0, vinfo.depth, InputOutput, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
+    Window win = XCreateWindow(display, DefaultRootWindow(display), 0, 0, 3000, 2000, 0, vinfo.depth, InputOutput, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
     XSelectInput(display, win, StructureNotifyMask);
     GC gc = XCreateGC(display, win, 0, 0);
 
@@ -34,9 +35,9 @@ namespace transparent_window {
     XMapWindow(display, win);
 
     XEvent event;
-
+    lambda();
     while (keep_running) {
-      if (XPendEvent(display)) {
+      if (XPending(display)) {
         XNextEvent(display, &event);
       }
 
@@ -52,20 +53,20 @@ namespace transparent_window {
       // }
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-#endif
-  }
-  void Window::close() {
-#if __linux == 1
-    keep_running = 0;
-#endif
-  }
-  Window::~Window() {
-#if __linux == 1
     XFixesShowCursor(display, win);
     XFlush(display);
 
     XDestroyWindow(display, win);
     XCloseDisplay(display);
+#endif
+  }
+  void BlankWindow::close() {
+#if __linux == 1
+    keep_running = 0;
+#endif
+  }
+  BlankWindow::~BlankWindow() {
+#if __linux == 1
 #endif
   }
 }
