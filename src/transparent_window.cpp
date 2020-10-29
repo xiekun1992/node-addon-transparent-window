@@ -8,6 +8,7 @@ namespace transparent_window {
   }
   void BlankWindow::create(std::function<void()> const& lambda) {
 #if __linux == 1
+    keep_running = 1;
     Display* display = XOpenDisplay(NULL);
 
     XVisualInfo vinfo;

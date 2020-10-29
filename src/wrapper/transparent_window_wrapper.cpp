@@ -1,6 +1,6 @@
 #include "transparent_window_wrapper.h"
 
-transparent_window::BlankWindow window;
+transparent_window::BlankWindow* window;
 std::thread thread;
 Napi::ThreadSafeFunction tsfn;
 namespace TransparentWindow {
@@ -23,13 +23,15 @@ namespace TransparentWindow {
       auto createHandler = [=]() {
         tsfn.BlockingCall(callback);
       };
-      window.create(createHandler);
+      window = new transparent_window::BlankWindow();
+      window->create(createHandler);
     });
     return info.Env().Undefined();
   }
   Napi::Value close(const Napi::CallbackInfo& info) {
-    window.close();
+    window->close();
     tsfn.Release();
+    delete window;
     return info.Env().Undefined();
   }
   Napi::Object initMethods(Napi::Env env, Napi::Object exports) {
