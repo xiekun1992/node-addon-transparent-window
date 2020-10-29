@@ -1,11 +1,14 @@
 {
-  "name": "node-addon-transparent-window",
+  "name": "@xiekun1992/node-addon-transparent-window",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "node-gyp rebuild"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/xiekun1992"
   },
   "repository": {
     "type": "git",
