@@ -6,5 +6,8 @@ module.exports = {
   },
   close() {
     transparentWindow.close()
+  },
+  topmost() {
+    transparentWindow.topmost()
   }
 }
