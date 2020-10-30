@@ -3,6 +3,7 @@
 transparent_window::BlankWindow* windowPtr;
 std::thread thread;
 Napi::ThreadSafeFunction tsfn;
+int threadId = 0;
 namespace TransparentWindow {
   Napi::Value create(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
@@ -17,6 +18,7 @@ namespace TransparentWindow {
       thread.join();
     });
     thread = std::thread([]() {
+      threadId = GetCurrentThreadId();
       auto callback = [](Napi::Env env, Napi::Function jsCallback) {
         jsCallback.Call({});
       };
@@ -30,7 +32,7 @@ namespace TransparentWindow {
     return info.Env().Undefined();
   }
   Napi::Value close(const Napi::CallbackInfo& info) {
-    windowPtr->close();
+    windowPtr->close(threadId);
     tsfn.Release();
     // delete window;
     return info.Env().Undefined();
