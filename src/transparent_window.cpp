@@ -90,7 +90,7 @@ namespace transparent_window {
     wc.lpszClassName = CLASS_NAME;
 
     RegisterClass(&wc);
-    HWND hwnd = CreateWindowEx(
+    hwnd = CreateWindowEx(
       0,                              // Optional window styles.
       CLASS_NAME,                     // Window class
       L"Transparent Window",    // Window text
@@ -104,9 +104,9 @@ namespace transparent_window {
     );
     if (hwnd != NULL) {
       SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & (~(WS_CAPTION | WS_SYSMENU | WS_SIZEBOX)));
-      SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & (~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME)) | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
+      SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & (~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME)) | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST);
       SetLayeredWindowAttributes(hwnd, 0, 1, LWA_ALPHA | LWA_COLORKEY);
-      // SetWindowPos(hwnd, HWND_TOPMOST, -10, - 10, GetSystemMetrics(SM_CXSCREEN) + 20, GetSystemMetrics(SM_CYSCREEN) + 20, SWP_SHOWWINDOW | SWP_FRAMECHANGED | SWP_DRAWFRAME);
+      // SetWindowPos(hwnd, HWND_TOPMOST, -10, - 10, GetSystemMetrics(SM_CXSCREEN) + 20, GetSystemMetrics(SM_CYSCREEN) + 20, SWP_NOMOVE | SWP_NOSIZE);
       ShowCursor(false);
       
       ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -124,6 +124,20 @@ namespace transparent_window {
         DispatchMessage(&msg);
       }
     }
+#endif
+  }
+  void BlankWindow::topmost() {
+#if _WIN32 == 1
+    DWORD threadId = GetCurrentThreadId();
+    DWORD threadProcessId = GetWindowThreadProcessId(hwnd, NULL);
+    AttachThreadInput(threadProcessId, threadId, TRUE);
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+    SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOMOVE);
+    SetForegroundWindow(hwnd);
+    SetFocus(hwnd);
+    SetActiveWindow(hwnd);
+    AttachThreadInput(threadProcessId, threadId, FALSE);
+    // SetWindowPos(hwnd, HWND_TOPMOST, -10, - 10, GetSystemMetrics(SM_CXSCREEN) + 20, GetSystemMetrics(SM_CYSCREEN) + 20, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 #endif
   }
   void BlankWindow::close(int threadId) {

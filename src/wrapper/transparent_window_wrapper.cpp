@@ -39,7 +39,12 @@ namespace TransparentWindow {
     // delete window;
     return info.Env().Undefined();
   }
+  Napi::Value topmost(const Napi::CallbackInfo& info) {
+    windowPtr->topmost();
+    return info.Env().Undefined();
+  }
   Napi::Object initMethods(Napi::Env env, Napi::Object exports) {
+    exports.Set("topmost", Napi::Function::New(env, TransparentWindow::topmost));
     exports.Set("create", Napi::Function::New(env, TransparentWindow::create));
     exports.Set("close", Napi::Function::New(env, TransparentWindow::close));
     return exports;

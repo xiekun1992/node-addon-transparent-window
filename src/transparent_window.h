@@ -32,13 +32,14 @@ namespace transparent_window {
       // Window win;
       int keep_running;
 #elif _WIN32 == 1
-      
+      HWND hwnd;
 #endif
     public:
       BlankWindow();
       ~BlankWindow();
       void create(std::function<void()> const& lambda);
       void close(int threadId);
+      void BlankWindow::topmost();
   };
 }
 
