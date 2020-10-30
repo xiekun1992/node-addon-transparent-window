@@ -18,7 +18,9 @@ namespace TransparentWindow {
       thread.join();
     });
     thread = std::thread([]() {
+#if _WIN32 == 1
       threadId = GetCurrentThreadId();
+#endif
       auto callback = [](Napi::Env env, Napi::Function jsCallback) {
         jsCallback.Call({});
       };
