@@ -39,7 +39,7 @@ namespace transparent_window {
       ~BlankWindow();
       void create(std::function<void()> const& lambda);
       void close(int threadId);
-      void BlankWindow::topmost();
+      void topmost();
   };
 }
 
