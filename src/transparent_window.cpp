@@ -42,7 +42,7 @@ namespace transparent_window {
 
     Window win = XCreateWindow(display, DefaultRootWindow(display), 0, 0, 3000, 2000, 0, vinfo.depth, InputOutput, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
     XSelectInput(display, win, StructureNotifyMask);
-    GC gc = XCreateGC(display, win, 0, 0);
+    // GC gc = XCreateGC(display, win, 0, 0);
 
     // Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", 0);
     // XSetWMProtocols(display, win, &wm_delete_window, 1);
