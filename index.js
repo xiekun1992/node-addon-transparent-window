@@ -1,13 +1,14 @@
 const transparentWindow = require('./build/Release/transparent_window.node')
 
 module.exports = {
-  create(callback = function(){}) {
+  // callback receive mouse relative movement
+  create(callback = function({x, y}){}) {
     transparentWindow.create(callback)
   },
   close() {
     transparentWindow.close()
   },
-  topmost() {
-    transparentWindow.topmost()
-  }
+  // topmost() {
+  //   transparentWindow.topmost()
+  // }
 }

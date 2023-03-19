@@ -1,9 +1,10 @@
 #include "transparent_window_wrapper.h"
 
-transparent_window::BlankWindow* windowPtr;
+sdl_window::BlankWindow* windowPtr;
+// transparent_window::BlankWindow* windowPtr;
 std::thread thread;
 Napi::ThreadSafeFunction tsfn;
-int threadId = 0;
+// int threadId = 0;
 namespace TransparentWindow {
   Napi::Value create(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
@@ -19,32 +20,39 @@ namespace TransparentWindow {
     });
     thread = std::thread([]() {
 #if _WIN32 == 1
-      threadId = GetCurrentThreadId();
+      // threadId = GetCurrentThreadId();
 #endif
-      auto callback = [](Napi::Env env, Napi::Function jsCallback) {
-        jsCallback.Call({});
+      auto callback = [](Napi::Env env, Napi::Function jsCallback, int* pos) {
+        Napi::Object obj = Napi::Object::New(env);
+        obj.Set(Napi::String::New(env, "x"), pos[0]);
+        obj.Set(Napi::String::New(env, "y"), pos[1]);
+        jsCallback.Call({obj});
       };
-      transparent_window::BlankWindow window;
+      sdl_window::BlankWindow window;
+      // transparent_window::BlankWindow window;
       windowPtr = &window;
-      auto createHandler = [=]() {
-        tsfn.BlockingCall(callback);
+      auto createHandler = [=](int x, int y) {
+        int pos[2] = {x, y};
+        printf("x %d, y %d\n", x, y);
+        tsfn.BlockingCall(pos, callback);
       };
       window.create(createHandler);
     });
     return info.Env().Undefined();
   }
   Napi::Value close(const Napi::CallbackInfo& info) {
-    windowPtr->close(threadId);
+    windowPtr->close();
+    // windowPtr->close(threadId);
     tsfn.Release();
     // delete window;
     return info.Env().Undefined();
   }
-  Napi::Value topmost(const Napi::CallbackInfo& info) {
-    windowPtr->topmost();
-    return info.Env().Undefined();
-  }
+  // Napi::Value topmost(const Napi::CallbackInfo& info) {
+  //   windowPtr->topmost();
+  //   return info.Env().Undefined();
+  // }
   Napi::Object initMethods(Napi::Env env, Napi::Object exports) {
-    exports.Set("topmost", Napi::Function::New(env, TransparentWindow::topmost));
+    // exports.Set("topmost", Napi::Function::New(env, TransparentWindow::topmost));
     exports.Set("create", Napi::Function::New(env, TransparentWindow::create));
     exports.Set("close", Napi::Function::New(env, TransparentWindow::close));
     return exports;
